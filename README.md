@@ -229,4 +229,4 @@ This project is open source. See the repository for licensing details.
 
 ---
 
-*Built with ❤️ by [Fidel876](https://github.com/Fidel876)*
+*Built by [Fidel876](https://github.com/Fidel876)*
