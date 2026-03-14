@@ -1,4 +1,7 @@
-streamlit
+flask
+gunicorn
+supabase
+python-dotenv
 pandas
 numpy
 scikit-learn

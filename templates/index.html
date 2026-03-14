@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SENTINEL — Fraud Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0f19;--s1:#111827;--s2:#1a2236;--s3:#202c42;
+  --rule:#1e2d45;--rule2:#182239;
+  --dim:#4b6080;--mid:#7a95b5;--text:#b0c4de;--hi:#d6e4f7;--white:#eef4ff;
+  --red:#f25c6e;--rd:rgba(242,92,110,0.10);--rb:rgba(242,92,110,0.30);
+  --green:#34d399;--gd:rgba(52,211,153,0.09);--gb:rgba(52,211,153,0.28);
+  --amber:#fbbf24;--ad:rgba(251,191,36,0.09);--ab:rgba(251,191,36,0.30);
+  --accent:#6366f1;--acd:rgba(99,102,241,0.12);--acb:rgba(99,102,241,0.35);
+  --accent2:#818cf8;
+  --body:'Inter',sans-serif;
+  --serif:'Fraunces',serif;
+  --disp:'Space Grotesk',sans-serif;
+}
+html{font-size:14px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-weight:400;min-height:100vh;display:flex;flex-direction:column;line-height:1.5}
+button,input,select,textarea{font-family:var(--body)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--rule);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--mid)}
+
+/* ════════════════════════
+   LOGIN
+════════════════════════ */
+#screen-login{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.lw{width:400px}
+.l-logo{font-family:var(--disp);font-size:2.2rem;font-weight:700;letter-spacing:0.05em;color:var(--white);margin-bottom:4px}
+.l-logo span{color:var(--accent2)}
+.l-tagline{font-size:0.78rem;color:var(--dim);margin-bottom:40px}
+.l-lbl{display:block;font-size:0.75rem;font-weight:500;color:var(--mid);margin-bottom:7px}
+.l-inp{width:100%;background:var(--s1);border:1px solid var(--rule);padding:11px 14px;color:var(--white);font-size:0.9rem;outline:none;transition:border-color .2s;margin-bottom:14px;border-radius:6px}
+.l-inp:focus{border-color:var(--accent2)}
+.l-btn{width:100%;margin-top:6px;padding:13px;background:var(--accent);color:#fff;border:none;font-family:var(--disp);font-size:0.95rem;font-weight:600;letter-spacing:0.04em;cursor:pointer;transition:all .2s;border-radius:6px}
+.l-btn:hover:not(:disabled){background:var(--accent2);transform:translateY(-1px)}
+.l-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.l-hint{margin-top:12px;font-size:0.78rem;color:var(--dim);text-align:center;min-height:20px}
+.l-forgot{display:block;text-align:right;font-size:0.75rem;color:var(--accent2);cursor:pointer;margin-top:-8px;margin-bottom:16px;text-decoration:none;background:none;border:none;padding:0}
+.l-forgot:hover{color:var(--white)}
+.l-divider{height:1px;background:var(--rule);margin:20px 0}
+.l-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.l-role-badge{padding:8px 6px;text-align:center;border:1px solid var(--rule);border-radius:6px;font-size:0.7rem;color:var(--dim)}
+.l-role-badge strong{display:block;font-size:0.78rem;color:var(--mid);margin-bottom:2px}
+
+/* ════════════════════════
+   SIGNUP SCREEN
+════════════════════════ */
+#screen-signup{position:fixed;inset:0;z-index:1000;background:var(--bg);display:none;align-items:center;justify-content:center;overflow-y:auto;padding:40px 20px}
+.sw{width:440px}
+.s-back{background:none;border:none;color:var(--accent2);font-size:0.82rem;cursor:pointer;padding:0;margin-bottom:28px;display:flex;align-items:center;gap:6px}
+.s-back:hover{color:var(--white)}
+.s-title{font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--white);margin-bottom:6px}
+.s-sub{font-size:0.82rem;color:var(--dim);margin-bottom:28px}
+.s-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.s-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.s-role-opt{padding:12px 8px;text-align:center;border:1px solid var(--rule);border-radius:8px;cursor:pointer;transition:all .2s}
+.s-role-opt:hover{border-color:var(--mid)}
+.s-role-opt.selected{border-color:var(--accent2);background:var(--acd)}
+.s-role-opt input{display:none}
+.s-role-name{font-family:var(--disp);font-size:0.9rem;font-weight:600;color:var(--hi);display:block;margin-bottom:4px}
+.s-role-desc{font-size:0.7rem;color:var(--dim);line-height:1.4}
+.s-role-opt.selected .s-role-name{color:var(--accent2)}
+.s-terms{font-size:0.75rem;color:var(--dim);text-align:center;margin-top:12px;line-height:1.6}
+
+/* ════════════════════════
+   UPLOAD SCREEN
+════════════════════════ */
+#screen-upload{display:none;flex:1;align-items:center;justify-content:center;padding:40px 24px}
+.upload-card{width:100%;max-width:580px}
+.up-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+.up-logo{font-family:var(--disp);font-size:1.4rem;font-weight:700;letter-spacing:0.04em;color:var(--white)}
+.up-logo span{color:var(--accent2)}
+.up-user-info{display:flex;align-items:center;gap:10px}
+.up-user{font-size:0.78rem;color:var(--dim)}
+.up-role-pill{font-size:0.68rem;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid}
+.role-admin{color:var(--amber);border-color:var(--ab);background:var(--ad)}
+.role-analyst{color:var(--accent2);border-color:var(--acb);background:var(--acd)}
+.role-investigator{color:var(--green);border-color:var(--gb);background:var(--gd)}
+.up-logout{font-size:0.72rem;color:var(--dim);background:none;border:1px solid var(--rule);padding:4px 10px;border-radius:5px;cursor:pointer;transition:all .2s}
+.up-logout:hover{border-color:var(--red);color:var(--red)}
+.up-title{font-family:var(--serif);font-weight:600;font-size:2.6rem;color:var(--white);line-height:1.15;margin-bottom:8px}
+.up-title em{font-style:italic;font-weight:300;color:var(--accent2)}
+.up-sub{font-size:0.85rem;color:var(--dim);margin-bottom:28px}
+.dz{border:1px dashed var(--rule);padding:40px 24px;text-align:center;cursor:pointer;transition:all .2s;display:block;border-radius:8px}
+.dz:hover,.dz.drag{border-color:var(--accent2);background:var(--acd)}
+.dz input{display:none}
+.dz-icon{margin-bottom:14px;opacity:0.5;transition:opacity .2s}
+.dz:hover .dz-icon,.dz.drag .dz-icon{opacity:1}
+.dz-title{font-family:var(--disp);font-size:1.05rem;font-weight:600;color:var(--hi);margin-bottom:6px}
+.dz-sub{font-size:0.82rem;color:var(--dim)}
+#up-filename{margin-top:12px;font-size:0.82rem;color:var(--accent2);min-height:14px}
+.up-actions{display:flex;gap:10px;margin-top:14px}
+.btn-primary{padding:11px 26px;background:var(--accent);color:#fff;border:none;font-family:var(--disp);font-size:0.95rem;font-weight:600;letter-spacing:0.04em;cursor:pointer;transition:all .2s;border-radius:6px}
+.btn-primary:hover:not(:disabled){background:var(--accent2);transform:translateY(-1px)}
+.btn-primary:disabled{background:var(--s3);color:var(--dim);cursor:not-allowed;transform:none}
+.btn-ghost{padding:10px 18px;background:none;color:var(--text);border:1px solid var(--rule);font-size:0.82rem;font-weight:500;cursor:pointer;transition:all .2s;border-radius:6px}
+.btn-ghost:hover{border-color:var(--mid);color:var(--white)}
+#up-error{display:none;margin-top:12px;font-size:0.82rem;color:var(--red);padding:10px 14px;border-left:2px solid var(--red);background:var(--rd);border-radius:0 6px 6px 0}
+
+/* History panel on upload screen */
+.up-history{margin-top:28px}
+.hist-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--rule2);font-size:0.82rem}
+.hist-row:last-child{border-bottom:none}
+.hist-name{color:var(--hi);font-weight:500}
+.hist-meta{font-size:0.75rem;color:var(--dim);margin-top:2px}
+.hist-badge{font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:4px;border:1px solid var(--rb);color:var(--red);background:var(--rd)}
+
+/* ════════════════════════
+   RESULTS SCREEN
+════════════════════════ */
+#screen-results{display:none;flex-direction:column;min-height:100vh}
+.topbar{height:52px;border-bottom:1px solid var(--rule);display:flex;align-items:center;padding:0 24px;gap:12px;position:sticky;top:0;z-index:100;background:var(--bg);flex-shrink:0}
+.t-logo{font-family:var(--disp);font-size:1.25rem;font-weight:700;letter-spacing:0.04em;color:var(--white);flex-shrink:0}
+.t-logo span{color:var(--accent2)}
+.t-sep{width:1px;height:16px;background:var(--rule);flex-shrink:0}
+.t-file{font-size:0.8rem;color:var(--mid);flex-shrink:0;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.t-user{font-size:0.78rem;color:var(--dim)}
+.t-role{font-size:0.68rem;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid}
+.t-clock{font-size:0.78rem;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+.t-btn{font-size:0.75rem;font-weight:500;color:var(--mid);background:none;border:1px solid var(--rule);padding:5px 12px;cursor:pointer;transition:all .2s;border-radius:5px;white-space:nowrap}
+.t-btn:hover{border-color:var(--mid);color:var(--hi)}
+.t-btn.danger{color:var(--red);border-color:var(--rb)}
+.t-btn.danger:hover{background:var(--rd)}
+.tabnav{border-bottom:1px solid var(--rule);display:flex;padding:0 24px;gap:4px;background:var(--bg);position:sticky;top:52px;z-index:99}
+.tn{padding:13px 18px;font-size:0.82rem;font-weight:500;color:var(--dim);background:none;border:none;cursor:pointer;transition:color .15s;position:relative;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tn:hover{color:var(--hi)}
+.tn.active{color:var(--accent2);border-bottom-color:var(--accent2)}
+.results-body{flex:1;padding:32px 32px 60px}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+/* ── SHARED ── */
+.section-title{font-family:var(--serif);font-weight:600;font-size:2.1rem;color:var(--white);margin-bottom:4px;letter-spacing:-0.01em}
+.section-sub{font-size:0.82rem;color:var(--dim);margin-bottom:24px}
+.ew{font-size:0.72rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--mid);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+.card{background:var(--s1);border:1px solid var(--rule);padding:22px;border-radius:8px}
+.csm{background:var(--s1);border:1px solid var(--rule);padding:16px 20px;border-radius:8px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.gap{margin-bottom:20px}
+.dv{height:1px;background:var(--rule);margin:20px 0}
+.kv{font-family:var(--disp);font-size:2.6rem;line-height:1;font-weight:700;color:var(--white);margin-bottom:6px}
+.kv.red{color:var(--red)}.kv.green{color:var(--green)}.kv.amber{color:var(--amber)}.kv.accent{color:var(--accent2)}
+.kl{font-size:0.78rem;color:var(--dim)}
+.kd{font-size:0.78rem;margin-top:5px}.kd.up{color:var(--red)}.kd.dn{color:var(--green)}
+.tw{overflow-x:auto;max-height:440px;overflow-y:auto}
+table{width:100%;border-collapse:collapse;font-size:0.82rem}
+thead{position:sticky;top:0;z-index:2}
+thead tr{border-bottom:1px solid var(--rule)}
+th{padding:10px 14px;font-size:0.72rem;font-weight:600;letter-spacing:0.02em;color:var(--mid);white-space:nowrap;text-align:left;background:var(--s1)}
+td{padding:10px 14px;border-bottom:1px solid var(--rule2);color:var(--text);white-space:nowrap}
+tbody tr{transition:background .1s}
+tbody tr:hover td{background:var(--s2)}
+.pill{display:inline-block;font-size:0.72rem;font-weight:600;padding:3px 10px;border:1px solid;border-radius:4px}
+.pf{color:var(--red);border-color:var(--rb);background:var(--rd)}
+.ps{color:var(--green);border-color:var(--gb);background:var(--gd)}
+.pr{color:var(--amber);border-color:var(--ab);background:var(--ad)}
+.pi{color:var(--mid);border-color:var(--rule)}
+.sb{height:4px;background:var(--rule);margin-top:8px;overflow:hidden;border-radius:2px}
+.sf{height:100%;transition:width 1.2s ease;border-radius:2px}
+.sf.red{background:var(--red)}.sf.green{background:var(--green)}.sf.amber{background:var(--amber)}
+.mr{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--rule2)}
+.mr:last-child{border-bottom:none}
+.mk{font-size:0.82rem;color:var(--dim)}.mv{font-size:0.88rem;color:var(--hi);font-weight:600}
+.fb-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.fb-name{font-size:0.82rem;color:var(--text);width:170px;flex-shrink:0}
+.fb-bg{flex:1;height:4px;background:var(--rule);overflow:hidden;border-radius:2px}
+.fb-fill{height:100%;background:var(--accent2);transition:width 1.3s ease;border-radius:2px}
+.fb-pct{font-size:0.78rem;font-weight:600;color:var(--mid);width:36px;text-align:right;flex-shrink:0}
+.cm-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;max-width:240px}
+.cc{padding:20px 10px;text-align:center;font-family:var(--disp);font-size:2rem;font-weight:700;border-radius:6px}
+.cc-sub{font-size:0.72rem;color:var(--dim);margin-top:4px}
+.c-tp{background:rgba(52,211,153,0.15);color:var(--green)}
+.c-tn{background:rgba(52,211,153,0.10);color:var(--green)}
+.c-fp{background:rgba(242,92,110,0.12);color:var(--red)}
+.c-fn{background:rgba(242,92,110,0.08);color:var(--red)}
+#case-panel{display:none;margin-top:16px}
+
+/* ── PROCESSING ── */
+.proc{position:fixed;inset:0;z-index:500;background:rgba(11,15,25,0.95);display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+.proc.on{display:flex}
+.proc-word{font-family:var(--disp);font-size:3rem;font-weight:700;letter-spacing:0.1em;color:var(--white);animation:flicker 1.4s steps(2) infinite}
+.proc-bar{width:240px;height:2px;background:var(--rule);overflow:hidden;border-radius:1px}
+.proc-fill{height:100%;background:var(--accent2);width:0;animation:prog 2.4s ease forwards}
+.proc-sub{font-size:0.82rem;color:var(--dim)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;z-index:600;background:var(--s2);border:1px solid var(--rule);border-left:3px solid var(--green);padding:13px 20px;font-size:0.85rem;border-radius:6px;transform:translateY(70px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-left-color:var(--red)}
+.toast.warn{border-left-color:var(--amber)}
+
+/* ── SESSION BANNER ── */
+.session-warn{display:none;position:fixed;top:52px;left:0;right:0;z-index:98;background:var(--ad);border-bottom:1px solid var(--ab);padding:8px 24px;font-size:0.78rem;color:var(--amber);text-align:center}
+
+@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes prog{0%{width:0}100%{width:100%}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .4s ease both}
+
+@media(max-width:800px){
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:1fr 1fr}
+  .g21,.g2{grid-template-columns:1fr}
+  .t-clock,.t-sep{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════
+     SCREEN 1: LOGIN
+════════════════════════ -->
+<div id="screen-login">
+  <div class="lw">
+    <div class="l-logo">SENTI<span>NEL</span></div>
+    <div class="l-tagline">Fraud Intelligence Platform · v3.0</div>
+
+    <label class="l-lbl">Email Address</label>
+    <input class="l-inp" type="email" id="l-email" placeholder="analyst@bank.com" autocomplete="email"/>
+
+    <label class="l-lbl">Password</label>
+    <input class="l-inp" type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password"/>
+
+    <button class="l-forgot" onclick="forgotPassword()">Forgot password?</button>
+
+    <button class="l-btn" id="login-btn">AUTHENTICATE</button>
+    <div class="l-hint" id="l-hint">Sign in with your Supabase credentials</div>
+
+    <div class="l-divider"></div>
+    <div style="text-align:center;font-size:0.8rem;color:var(--dim)">
+      Don't have an account?
+      <button onclick="showSignup()" style="background:none;border:none;color:var(--accent2);cursor:pointer;font-size:0.8rem;font-weight:600;padding:0;margin-left:4px">Create one</button>
+    </div>
+    <div class="l-roles" style="margin-top:16px">
+      <div class="l-role-badge"><strong>Admin</strong>Full access</div>
+      <div class="l-role-badge"><strong>Analyst</strong>Upload & predict</div>
+      <div class="l-role-badge"><strong>Investigator</strong>View only</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════
+     SCREEN 1B: SIGNUP
+════════════════════════ -->
+<div id="screen-signup">
+  <div class="sw">
+    <button class="s-back" onclick="showLogin()">← Back to login</button>
+    <div class="s-title">Create your account</div>
+    <div class="s-sub">Fill in your details to get access to SENTINEL</div>
+
+    <div class="s-row" style="margin-bottom:14px">
+      <div>
+        <label class="l-lbl">First Name</label>
+        <input class="l-inp" type="text" id="s-fname" placeholder="James" style="margin-bottom:0"/>
+      </div>
+      <div>
+        <label class="l-lbl">Last Name</label>
+        <input class="l-inp" type="text" id="s-lname" placeholder="Smith" style="margin-bottom:0"/>
+      </div>
+    </div>
+
+    <label class="l-lbl">Work Email</label>
+    <input class="l-inp" type="email" id="s-email" placeholder="analyst@yourbank.com" autocomplete="email"/>
+
+    <label class="l-lbl">Password</label>
+    <input class="l-inp" type="password" id="s-pass" placeholder="Min. 8 characters" autocomplete="new-password"/>
+
+    <label class="l-lbl">Confirm Password</label>
+    <input class="l-inp" type="password" id="s-pass2" placeholder="Repeat password" style="margin-bottom:20px"/>
+
+    <label class="l-lbl">Select Your Role</label>
+    <div class="s-roles">
+      <label class="s-role-opt" onclick="selectRole('analyst',this)">
+        <input type="radio" name="s-role" value="analyst"/>
+        <span class="s-role-name">Analyst</span>
+        <span class="s-role-desc">Upload datasets & run predictions</span>
+      </label>
+      <label class="s-role-opt" onclick="selectRole('investigator',this)">
+        <input type="radio" name="s-role" value="investigator"/>
+        <span class="s-role-name">Investigator</span>
+        <span class="s-role-desc">Review alerts & investigate cases</span>
+      </label>
+      <label class="s-role-opt" onclick="selectRole('admin',this)">
+        <input type="radio" name="s-role" value="admin"/>
+        <span class="s-role-name">Admin</span>
+        <span class="s-role-desc">Full access to all features</span>
+      </label>
+    </div>
+
+    <button class="l-btn" id="signup-btn" style="margin-top:8px">CREATE ACCOUNT</button>
+    <div class="l-hint" id="s-hint"></div>
+    <div class="s-terms">By creating an account you agree to the platform terms of use.<br/>Admins can manage all users from the settings panel.</div>
+  </div>
+</div>
+
+<!-- ════════════════════════
+     SCREEN 2: UPLOAD
+════════════════════════ -->
+<div id="screen-upload">
+  <div class="upload-card">
+    <div class="up-header">
+      <div class="up-logo">SENTI<span>NEL</span></div>
+      <div class="up-user-info">
+        <span class="up-user" id="up-user-label"></span>
+        <span class="up-role-pill role-analyst" id="up-role-pill"></span>
+        <button class="up-logout" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="up-title">Upload your<br/><em>transaction</em> dataset.</div>
+    <div class="up-sub">CSV format · Every record will be analysed by the model</div>
+
+    <label class="dz" id="dz" for="file-input">
+      <input type="file" id="file-input" accept=".csv,.xlsx,.xls" onchange="onFileChange(this)"/>
+      <div class="dz-icon">
+        <svg width="28" height="28" fill="none" stroke="var(--accent2)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M24.5 17.5v5a2.33 2.33 0 01-2.33 2.33H5.83A2.33 2.33 0 013.5 22.5v-5M19.83 9.33L14 3.5l-5.83 5.83M14 3.5v16.33"/>
+        </svg>
+      </div>
+      <div class="dz-title">Drop your CSV file here</div>
+      <div class="dz-sub">or click to browse · Max 50MB</div>
+      <div id="up-filename"></div>
+    </label>
+
+    <div class="up-actions">
+      <button class="btn-primary" id="analyse-btn" disabled onclick="runAnalysis()">ANALYSE DATASET</button>
+      <button class="btn-ghost" onclick="clearFile()">Clear</button>
+    </div>
+    <div id="up-error"></div>
+
+    <!-- Recent history -->
+    <div class="up-history" id="up-history" style="display:none">
+      <div class="ew" style="margin-top:28px">Recent Uploads</div>
+      <div class="card" style="padding:0">
+        <div id="history-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════
+     SCREEN 3: RESULTS
+════════════════════════ -->
+<div id="screen-results">
+
+  <div class="topbar">
+    <div class="t-logo">SENTI<span>NEL</span></div>
+    <div class="t-sep"></div>
+    <div class="t-file" id="t-file">No file loaded</div>
+    <div class="t-right">
+      <span class="t-user" id="t-user"></span>
+      <span class="t-role role-analyst" id="t-role-pill"></span>
+      <div class="t-sep"></div>
+      <span class="t-clock" id="t-clock"></span>
+      <div class="t-sep"></div>
+      <button class="t-btn" onclick="goToUpload()">← New Dataset</button>
+      <button class="t-btn danger" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="session-warn" id="session-warn">
+    ⚠ Your session will expire in 15 minutes. Save your work.
+  </div>
+
+  <div class="tabnav">
+    <button class="tn active" onclick="switchTab('overview',this)">Overview</button>
+    <button class="tn" onclick="switchTab('predictions',this)">Prediction Results</button>
+    <button class="tn" onclick="switchTab('alerts',this)">Fraud Alerts</button>
+    <button class="tn" onclick="switchTab('performance',this)">Model Performance</button>
+  </div>
+
+  <div class="results-body">
+
+    <!-- ── OVERVIEW ── -->
+    <div class="tab-pane active" id="tab-overview">
+      <div class="section-title fu">Dashboard</div>
+      <div class="section-sub fu">Summary of analysis results from your uploaded dataset</div>
+
+      <div class="g4 gap fu">
+        <div class="csm">
+          <div class="ew">Total Records</div>
+          <div class="kv accent" id="ov-total">—</div>
+          <div class="kl">transactions analysed</div>
+        </div>
+        <div class="csm">
+          <div class="ew">Fraud Detected</div>
+          <div class="kv red" id="ov-fraud">—</div>
+          <div class="kl" id="ov-fraud-pct">— of dataset</div>
+        </div>
+        <div class="csm">
+          <div class="ew">Legitimate</div>
+          <div class="kv green" id="ov-normal">—</div>
+          <div class="kl" id="ov-normal-pct">— of dataset</div>
+        </div>
+        <div class="csm">
+          <div class="ew">Fraud Rate</div>
+          <div class="kv amber" id="ov-rate">—%</div>
+          <div class="kl">of all transactions</div>
+        </div>
+      </div>
+
+      <div class="g21 gap fu">
+        <div class="card">
+          <div class="ew">Transaction Distribution (first 20 rows)</div>
+          <canvas id="ch-dist" style="max-height:200px"></canvas>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column">
+          <div class="ew">Fraud vs Legitimate</div>
+          <div style="flex:1;display:flex;align-items:center;justify-content:center">
+            <canvas id="ch-pie" style="max-height:180px;max-width:180px"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card fu">
+        <div class="ew">Data Preview — First 10 Rows</div>
+        <div class="tw"><table id="preview-table"></table></div>
+      </div>
+    </div>
+
+    <!-- ── PREDICTION RESULTS ── -->
+    <div class="tab-pane" id="tab-predictions">
+      <div class="section-title fu">Prediction Results</div>
+      <div class="section-sub">Full ML model output for every transaction in your dataset</div>
+
+      <div class="g3 gap fu">
+        <div class="csm">
+          <div class="ew">Model</div>
+          <div style="font-family:var(--disp);font-size:1.3rem;font-weight:700;color:var(--white);letter-spacing:0.04em;margin-top:8px">ISOLATION FOREST</div>
+        </div>
+        <div class="csm">
+          <div class="ew">Total Predictions</div>
+          <div class="kv accent" id="pred-count">—</div>
+        </div>
+        <div class="csm">
+          <div class="ew">Anomalies Found</div>
+          <div class="kv red" id="pred-fraud">—</div>
+        </div>
+      </div>
+
+      <div class="card fu">
+        <div class="ew">All Predictions</div>
+        <div class="tw"><table id="all-results-table"></table></div>
+      </div>
+    </div>
+
+    <!-- ── FRAUD ALERTS ── -->
+    <div class="tab-pane" id="tab-alerts">
+      <div class="section-title fu">Fraud Alerts</div>
+      <div class="section-sub">Flagged transactions from your dataset — click any row to investigate</div>
+
+      <div class="g3 gap fu">
+        <div class="csm">
+          <div class="ew">Total Flagged</div>
+          <div class="kv red" id="al-count">—</div>
+        </div>
+        <div class="csm">
+          <div class="ew">Model Output</div>
+          <div class="kv red" id="al-max">—</div>
+        </div>
+        <div class="csm">
+          <div class="ew">Classification</div>
+          <div class="kv amber" id="al-avg">—</div>
+        </div>
+      </div>
+
+      <div class="card gap fu">
+        <div class="ew">Flagged Transactions</div>
+        <div class="tw"><table id="fraud-table"></table></div>
+      </div>
+
+      <div id="case-panel" class="fu">
+        <div class="ew">Case Detail — <span id="case-txn-label" style="color:var(--white)"></span></div>
+        <div class="card">
+          <div id="case-body" class="g3" style="margin-bottom:16px"></div>
+          <div class="dv"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn-ghost" style="color:var(--red);border-color:var(--rb)" onclick="showToast('Marked as confirmed fraud','err')">Confirm Fraud</button>
+            <button class="btn-ghost" onclick="showToast('Marked as false positive')">False Positive</button>
+            <button class="btn-ghost" onclick="showToast('Set to under investigation','warn')">Investigate</button>
+            <button class="btn-ghost" onclick="document.getElementById('case-panel').style.display='none'">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PERFORMANCE ── -->
+    <div class="tab-pane" id="tab-performance">
+      <div class="section-title fu">Model Performance</div>
+      <div class="section-sub">Evaluation metrics for the Isolation Forest model on the creditcard dataset</div>
+
+      <div class="g4 gap fu">
+        <div class="csm"><div class="ew">Accuracy</div><div class="kv green">99.74%</div><div class="sb"><div class="sf green" style="width:99.74%"></div></div></div>
+        <div class="csm"><div class="ew">Precision</div><div class="kv green">96.2%</div><div class="sb"><div class="sf green" style="width:96.2%"></div></div></div>
+        <div class="csm"><div class="ew">Recall</div><div class="kv amber">78.4%</div><div class="sb"><div class="sf amber" style="width:78.4%"></div></div></div>
+        <div class="csm"><div class="ew">F1 Score</div><div class="kv green">86.4%</div><div class="sb"><div class="sf green" style="width:86.4%"></div></div></div>
+      </div>
+
+      <div class="g2 gap fu">
+        <div class="card">
+          <div class="ew">Confusion Matrix</div>
+          <div style="display:flex;gap:24px;align-items:flex-start;margin-top:14px;flex-wrap:wrap">
+            <div>
+              <div style="font-size:0.72rem;font-weight:500;color:var(--dim);margin-bottom:8px;text-align:center">Predicted →</div>
+              <div class="cm-grid">
+                <div class="cc c-tn"><div>56,862</div><div class="cc-sub">True Neg</div></div>
+                <div class="cc c-fp"><div>8</div><div class="cc-sub">False Pos</div></div>
+                <div class="cc c-fn"><div>21</div><div class="cc-sub">False Neg</div></div>
+                <div class="cc c-tp"><div>79</div><div class="cc-sub">True Pos</div></div>
+              </div>
+            </div>
+            <div style="flex:1;min-width:140px">
+              <div class="mr"><span class="mk">True Positives</span><span class="mv" style="color:var(--green)">79</span></div>
+              <div class="mr"><span class="mk">True Negatives</span><span class="mv" style="color:var(--green)">56,862</span></div>
+              <div class="mr"><span class="mk">False Positives</span><span class="mv" style="color:var(--red)">8</span></div>
+              <div class="mr"><span class="mk">False Negatives</span><span class="mv" style="color:var(--amber)">21</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ew">ROC Curve · AUC = 0.9742</div>
+          <canvas id="ch-roc" style="max-height:220px;margin-top:10px"></canvas>
+        </div>
+      </div>
+
+      <div class="g2 fu">
+        <div class="card">
+          <div class="ew">Feature Importance</div>
+          <div style="margin-top:14px">
+            <div class="fb-row"><span class="fb-name">V14 · PCA Component</span><div class="fb-bg"><div class="fb-fill" style="width:92%"></div></div><span class="fb-pct">92%</span></div>
+            <div class="fb-row"><span class="fb-name">V4 · PCA Component</span><div class="fb-bg"><div class="fb-fill" style="width:81%"></div></div><span class="fb-pct">81%</span></div>
+            <div class="fb-row"><span class="fb-name">V12 · PCA Component</span><div class="fb-bg"><div class="fb-fill" style="width:74%"></div></div><span class="fb-pct">74%</span></div>
+            <div class="fb-row"><span class="fb-name">Amount</span><div class="fb-bg"><div class="fb-fill" style="width:68%"></div></div><span class="fb-pct">68%</span></div>
+            <div class="fb-row"><span class="fb-name">V10 · PCA Component</span><div class="fb-bg"><div class="fb-fill" style="width:61%"></div></div><span class="fb-pct">61%</span></div>
+            <div class="fb-row"><span class="fb-name">V11 · PCA Component</span><div class="fb-bg"><div class="fb-fill" style="width:55%"></div></div><span class="fb-pct">55%</span></div>
+            <div class="fb-row"><span class="fb-name">Time</span><div class="fb-bg"><div class="fb-fill" style="width:41%"></div></div><span class="fb-pct">41%</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ew">Performance History · 6 Months</div>
+          <canvas id="ch-perf" style="max-height:230px;margin-top:10px"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Processing -->
+<div class="proc" id="proc">
+  <div class="proc-word">ANALYSING</div>
+  <div class="proc-bar"><div class="proc-fill" id="proc-fill"></div></div>
+  <div class="proc-sub" id="proc-sub">Processing transactions</div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+//  CLOCK
+// ════════════════════════════════════════
+setInterval(()=>{
+  const el=document.getElementById('t-clock');
+  if(el) el.textContent=new Date().toISOString().replace('T',' ').split('.')[0]+' UTC';
+},1000);
+
+// ════════════════════════════════════════
+//  SESSION EXPIRY WARNING (7.5 hrs)
+// ════════════════════════════════════════
+let sessionTimer = null;
+function startSessionTimer(){
+  if(sessionTimer) clearTimeout(sessionTimer);
+  // Warn 15 min before 8hr expiry = 7hr 45min = 27900000ms
+  sessionTimer = setTimeout(()=>{
+    document.getElementById('session-warn').style.display='block';
+    showToast('Session expiring in 15 minutes','warn');
+  }, 27900000);
+}
+
+// ════════════════════════════════════════
+//  SCREENS
+// ════════════════════════════════════════
+function show(id){
+  ['login','upload','results'].forEach(s=>{
+    const el=document.getElementById('screen-'+s);
+    if(el) el.style.display='none';
+  });
+  const el=document.getElementById('screen-'+id);
+  if(!el) return;
+  el.style.display='flex';
+  if(id==='results') el.style.flexDirection='column';
+}
+
+function goToUpload(){
+  show('upload');
+  const cp=document.getElementById('case-panel');
+  if(cp) cp.style.display='none';
+  loadHistory();
+}
+
+// ════════════════════════════════════════
+//  LOGIN
+// ════════════════════════════════════════
+async function doLogin(){
+  const email    = document.getElementById('l-email').value.trim();
+  const password = document.getElementById('l-pass').value;
+  const hint     = document.getElementById('l-hint');
+  const btn      = document.getElementById('login-btn');
+
+  if(!email||!password){
+    setHint('Please enter your email and password.','var(--red)');
+    return;
+  }
+
+  btn.textContent='Authenticating…';
+  btn.disabled=true;
+  setHint('','var(--dim)');
+
+  try{
+    const res  = await fetch('/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,password})
+    });
+    const data = await res.json();
+
+    if(!res.ok){
+      setHint(data.error||'Invalid credentials.','var(--red)');
+      btn.textContent='AUTHENTICATE';
+      btn.disabled=false;
+      return;
+    }
+
+    // Success — populate UI with user info
+    setUserUI(data.email, data.role);
+    show('upload');
+    startSessionTimer();
+    loadHistory();
+
+  }catch(e){
+    setHint('Cannot reach server. Is Flask running?','var(--red)');
+    btn.textContent='AUTHENTICATE';
+    btn.disabled=false;
+  }
+}
+
+function setHint(msg, color){
+  const el=document.getElementById('l-hint');
+  el.textContent=msg;
+  el.style.color=color;
+}
+
+function setUserUI(email, role){
+  // Upload screen
+  document.getElementById('up-user-label').textContent = email;
+  const upPill = document.getElementById('up-role-pill');
+  upPill.textContent = role;
+  upPill.className   = 'up-role-pill role-'+role.toLowerCase();
+
+  // Topbar
+  document.getElementById('t-user').textContent = email;
+  const tPill = document.getElementById('t-role-pill');
+  tPill.textContent = role;
+  tPill.className   = 't-role role-'+role.toLowerCase();
+}
+
+// ════════════════════════════════════════
+//  SIGNUP
+// ════════════════════════════════════════
+let selectedRole = 'analyst';
+
+function showSignup(){
+  ['login','upload','results'].forEach(s=>{
+    const el=document.getElementById('screen-'+s);
+    if(el) el.style.display='none';
+  });
+  document.getElementById('screen-signup').style.display='flex';
+  // Pre-select analyst by default
+  const defaultOpt = document.querySelector('.s-role-opt');
+  if(defaultOpt) selectRole('analyst', defaultOpt);
+}
+
+function showLogin(){
+  document.getElementById('screen-signup').style.display='none';
+  show('login');
+  document.getElementById('s-hint').textContent='';
+  document.getElementById('s-hint').style.color='var(--dim)';
+}
+
+function selectRole(role, el){
+  selectedRole = role;
+  document.querySelectorAll('.s-role-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+async function doSignup(){
+  const fname  = document.getElementById('s-fname').value.trim();
+  const lname  = document.getElementById('s-lname').value.trim();
+  const email  = document.getElementById('s-email').value.trim();
+  const pass   = document.getElementById('s-pass').value;
+  const pass2  = document.getElementById('s-pass2').value;
+  const hint   = document.getElementById('s-hint');
+  const btn    = document.getElementById('signup-btn');
+
+  // Validation
+  if(!fname||!lname){ setSHint('Please enter your first and last name.','var(--red)'); return; }
+  if(!email){          setSHint('Please enter your work email.','var(--red)'); return; }
+  if(!pass){           setSHint('Please enter a password.','var(--red)'); return; }
+  if(pass.length<8){   setSHint('Password must be at least 8 characters.','var(--red)'); return; }
+  if(pass!==pass2){    setSHint('Passwords do not match.','var(--red)'); return; }
+  if(!selectedRole){   setSHint('Please select a role.','var(--red)'); return; }
+
+  btn.textContent='Creating account…';
+  btn.disabled=true;
+  setSHint('','var(--dim)');
+
+  try{
+    const res  = await fetch('/register',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        full_name: fname+' '+lname,
+        email,
+        password: pass,
+        role:     selectedRole
+      })
+    });
+    const data = await res.json();
+
+    if(!res.ok){
+      setSHint(data.error||'Registration failed. Please try again.','var(--red)');
+      btn.textContent='CREATE ACCOUNT';
+      btn.disabled=false;
+      return;
+    }
+
+    // Success — go back to login with success message
+    setSHint('','var(--dim)');
+    showLogin();
+    setHint('Account created! You can now log in.','var(--green)');
+    document.getElementById('l-email').value = email;
+
+  }catch(e){
+    setSHint('Cannot reach server. Is Flask running?','var(--red)');
+    btn.textContent='CREATE ACCOUNT';
+    btn.disabled=false;
+  }
+}
+
+function setSHint(msg, color){
+  const el=document.getElementById('s-hint');
+  el.textContent=msg;
+  el.style.color=color;
+}
+
+// ════════════════════════════════════════
+//  FORGOT PASSWORD
+// ════════════════════════════════════════
+async function forgotPassword(){
+  const email=document.getElementById('l-email').value.trim();
+  if(!email){
+    setHint('Enter your email address first.','var(--amber)');
+    return;
+  }
+  try{
+    const res  = await fetch('/reset-password',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email})
+    });
+    const data = await res.json();
+    if(res.ok){
+      setHint('Password reset email sent — check your inbox.','var(--green)');
+    } else {
+      setHint(data.error||'Could not send reset email.','var(--red)');
+    }
+  }catch(e){
+    setHint('Cannot reach server.','var(--red)');
+  }
+}
+
+// ════════════════════════════════════════
+//  LOGOUT
+// ════════════════════════════════════════
+async function doLogout(){
+  try{ await fetch('/logout',{method:'POST'}); }catch(e){}
+  if(sessionTimer) clearTimeout(sessionTimer);
+  show('login');
+  document.getElementById('l-pass').value       = '';
+  document.getElementById('login-btn').textContent = 'AUTHENTICATE';
+  document.getElementById('login-btn').disabled    = false;
+  document.getElementById('session-warn').style.display = 'none';
+  document.getElementById('up-history').style.display   = 'none';
+  setHint('Sign in with your Supabase credentials','var(--dim)');
+}
+
+// ════════════════════════════════════════
+//  FILE HANDLING
+// ════════════════════════════════════════
+function onFileChange(inp){
+  if(inp.files.length){
+    document.getElementById('up-filename').textContent = inp.files[0].name;
+    document.getElementById('analyse-btn').disabled    = false;
+  }
+}
+
+function clearFile(){
+  document.getElementById('file-input').value        = '';
+  document.getElementById('up-filename').textContent = '';
+  document.getElementById('analyse-btn').disabled    = true;
+  document.getElementById('up-error').style.display  = 'none';
+}
+
+// ════════════════════════════════════════
+//  HISTORY
+// ════════════════════════════════════════
+async function loadHistory(){
+  try{
+    const res  = await fetch('/history');
+    if(!res.ok) return;
+    const data = await res.json();
+    if(!data.length) return;
+
+    const list = document.getElementById('history-list');
+    list.innerHTML = data.slice(0,5).map(r=>`
+      <div class="hist-row">
+        <div>
+          <div class="hist-name">${r.filename||'Unknown file'}</div>
+          <div class="hist-meta">${new Date(r.created_at).toLocaleString()} · ${(r.total_records||0).toLocaleString()} records</div>
+        </div>
+        <span class="hist-badge">${r.fraud_count||0} fraud</span>
+      </div>
+    `).join('');
+
+    document.getElementById('up-history').style.display='block';
+  }catch(e){ /* silently fail */ }
+}
+
+// ════════════════════════════════════════
+//  ANALYSIS
+// ════════════════════════════════════════
+function runAnalysis(){
+  const inp   = document.getElementById('file-input');
+  const errEl = document.getElementById('up-error');
+  errEl.style.display='none';
+
+  showProc('Analysing transactions…', ()=>{
+    const fd=new FormData();
+    if(inp.files.length) fd.append('file',inp.files[0]);
+
+    fetch('/predict',{method:'POST',body:fd})
+      .then(r=>{
+        if(r.status===401){ show('login'); throw new Error('Session expired. Please log in again.'); }
+        if(r.status===403){ throw new Error('You do not have permission to run predictions.'); }
+        return r.json();
+      })
+      .then(data=>{
+        if(data.error){ errEl.textContent='Error: '+data.error; errEl.style.display='block'; return; }
+        populateDashboard(data, inp.files[0]?.name||'dataset.csv');
+      })
+      .catch(err=>{
+        errEl.textContent=err.message||'Could not reach server. Make sure Flask is running.';
+        errEl.style.display='block';
+      });
+  });
+}
+
+function populateDashboard(data, filename){
+  const fraud  = data.summary?.Fraud  || 0;
+  const normal = data.summary?.Normal || 0;
+  const total  = fraud + normal;
+  const pct    = total ? (fraud/total*100).toFixed(2)  : '0.00';
+  const npct   = total ? (normal/total*100).toFixed(2) : '0.00';
+
+  document.getElementById('ov-total').textContent      = total.toLocaleString();
+  document.getElementById('ov-fraud').textContent      = fraud.toLocaleString();
+  document.getElementById('ov-normal').textContent     = normal.toLocaleString();
+  document.getElementById('ov-rate').textContent       = pct+'%';
+  document.getElementById('ov-fraud-pct').textContent  = pct+'% of dataset';
+  document.getElementById('ov-normal-pct').textContent = npct+'% of dataset';
+  document.getElementById('pred-count').textContent    = total.toLocaleString();
+  document.getElementById('pred-fraud').textContent    = fraud.toLocaleString();
+  document.getElementById('al-count').textContent      = fraud.toLocaleString();
+  document.getElementById('al-max').textContent        = fraud>0 ? 'Anomaly (−1)' : 'None';
+  document.getElementById('al-avg').textContent        = fraud>0 ? 'Fraud' : 'Normal';
+  document.getElementById('t-file').textContent        = filename+' · '+total.toLocaleString()+' records';
+
+  buildTable('preview-table',     data.columns, (data.preview||[]).slice(0,10));
+  buildTable('all-results-table', data.columns,  data.preview||[]);
+  buildTable('fraud-table',       data.columns,  data.fraud_rows||[], true);
+  buildOverviewCharts(fraud, normal, data.columns, data.preview||[]);
+
+  show('results');
+  showToast('Analysis complete · '+fraud+' fraud transaction'+(fraud!==1?'s':'')+' detected');
+}
+
+// ════════════════════════════════════════
+//  TABLE BUILDER
+// ════════════════════════════════════════
+function buildTable(id, cols, rows, isFraud=false){
+  const t=document.getElementById(id);
+  if(!cols||!rows||rows.length===0){
+    t.innerHTML=`<tr><td style="padding:16px;color:var(--dim)">${isFraud?'✓ No fraud transactions detected in this dataset':'No data to display'}</td></tr>`;
+    return;
+  }
+  const displayCols = isFraud ? ['#',...cols] : cols;
+  let h='<thead><tr>'+displayCols.map(c=>`<th>${c}</th>`).join('');
+  if(isFraud) h+='<th>Action</th>';
+  h+='</tr></thead><tbody>';
+  rows.forEach((row,i)=>{
+    h+='<tr>';
+    if(isFraud) h+=`<td style="color:var(--dim);font-size:0.75rem">${i+1}</td>`;
+    cols.forEach(c=>{
+      const v=row[c]??'—';
+      if(c==='Fraud_Status'){
+        h+=`<td><span class="pill ${v==='Fraud'?'pf':'ps'}">${v}</span></td>`;
+      } else {
+        const n=parseFloat(v);
+        h+=`<td>${(!isNaN(n)&&v!=='') ? n.toFixed(4) : v}</td>`;
+      }
+    });
+    if(isFraud){
+      const rowData=JSON.stringify(row).replace(/"/g,'&quot;');
+      h+=`<td><button class="btn-ghost" style="padding:4px 10px;font-size:0.75rem" onclick='openCase(${rowData})'>View</button></td>`;
+    }
+    h+='</tr>';
+  });
+  t.innerHTML=h+'</tbody>';
+}
+
+// ════════════════════════════════════════
+//  CASE PANEL
+// ════════════════════════════════════════
+function openCase(row){
+  document.getElementById('case-txn-label').textContent=row['Transaction ID']||Object.values(row)[0]||'—';
+  const entries=Object.entries(row);
+  const third=Math.ceil(entries.length/3);
+  let html='';
+  [0,1,2].forEach(col=>{
+    html+='<div>';
+    entries.slice(col*third,(col+1)*third).forEach(([k,v])=>{
+      const isS=k==='Fraud_Status';
+      html+=`<div class="mr"><span class="mk">${k}</span><span class="mv" ${isS?'style="color:var(--red)"':''}>${v??'—'}</span></div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('case-body').innerHTML=html;
+  const p=document.getElementById('case-panel');
+  p.style.display='block';
+  p.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ════════════════════════════════════════
+//  TAB SWITCHER
+// ════════════════════════════════════════
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ════════════════════════════════════════
+//  CHARTS
+// ════════════════════════════════════════
+Chart.defaults.color       = '#7a95b5';
+Chart.defaults.borderColor = '#1e2d45';
+Chart.defaults.font.family = "'Inter',sans-serif";
+Chart.defaults.font.size   = 11;
+
+let chartDist=null, chartPie=null;
+
+function buildOverviewCharts(fraud, normal, cols, rows){
+  const amountCol=cols&&cols.find(c=>c.toLowerCase()==='amount');
+  if(chartDist) chartDist.destroy();
+  if(chartPie)  chartPie.destroy();
+
+  chartDist=new Chart(document.getElementById('ch-dist'),{type:'bar',data:{
+    labels:rows.slice(0,20).map((_,i)=>'Row '+(i+1)),
+    datasets:[
+      {label:'Normal',data:rows.slice(0,20).map(r=>r.Fraud_Status==='Normal'?(parseFloat(r[amountCol])||1):0),
+        backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1},
+      {label:'Fraud', data:rows.slice(0,20).map(r=>r.Fraud_Status==='Fraud'?(parseFloat(r[amountCol])||1):0),
+        backgroundColor:'rgba(242,92,110,0.6)',borderColor:'#f25c6e',borderWidth:1}
+    ]
+  },options:{responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{labels:{boxWidth:10,padding:14}}},
+    scales:{x:{grid:{display:false},stacked:true},y:{grid:{color:'#1e2d45'},stacked:true}}}});
+
+  chartPie=new Chart(document.getElementById('ch-pie'),{type:'doughnut',data:{
+    labels:['Legitimate','Fraud'],
+    datasets:[{data:[normal||1,fraud||0],
+      backgroundColor:['rgba(52,211,153,0.8)','rgba(242,92,110,0.8)'],
+      borderColor:'#111827',borderWidth:4}]
+  },options:{responsive:true,maintainAspectRatio:true,cutout:'68%',
+    plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:14}}}}});
+}
+
+function buildStaticCharts(){
+  const fpr=[0,0.001,0.003,0.008,0.02,0.05,0.1,0.2,0.4,0.7,1.0];
+  const tpr=[0,0.40,0.65,0.77,0.85,0.91,0.95,0.97,0.985,0.995,1.0];
+  new Chart(document.getElementById('ch-roc'),{type:'line',data:{
+    labels:fpr.map(v=>v.toFixed(3)),
+    datasets:[
+      {label:'Model (AUC=0.9742)',data:tpr,borderColor:'#818cf8',borderWidth:2,tension:0.3,pointRadius:0,fill:false},
+      {label:'Random Classifier',data:fpr,borderColor:'#1e2d45',borderWidth:1,borderDash:[4,4],pointRadius:0}
+    ]
+  },options:{responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{labels:{boxWidth:10}}},
+    scales:{
+      x:{title:{display:true,text:'False Positive Rate',color:'#7a95b5'},grid:{color:'#1e2d45'},ticks:{maxTicksLimit:6}},
+      y:{title:{display:true,text:'True Positive Rate',color:'#7a95b5'},grid:{color:'#1e2d45'}}
+    }}});
+
+  new Chart(document.getElementById('ch-perf'),{type:'line',data:{
+    labels:['Oct','Nov','Dec','Jan','Feb','Mar'],
+    datasets:[
+      {label:'Accuracy', data:[99.68,99.71,99.70,99.73,99.74,99.74],borderColor:'#34d399',tension:0.3,borderWidth:2,pointRadius:3},
+      {label:'Recall',   data:[74.2,75.8,76.0,77.1,77.9,78.4],      borderColor:'#fbbf24',tension:0.3,borderWidth:2,pointRadius:3},
+      {label:'Precision',data:[94.8,95.1,95.3,95.7,96.0,96.2],      borderColor:'#818cf8',tension:0.3,borderWidth:2,pointRadius:3}
+    ]
+  },options:{responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{labels:{boxWidth:10,padding:14}}},
+    scales:{x:{grid:{color:'#1e2d45'}},y:{grid:{color:'#1e2d45'}}}}});
+}
+
+// ════════════════════════════════════════
+//  PROCESSING
+// ════════════════════════════════════════
+function showProc(msg,cb){
+  const ov=document.getElementById('proc');
+  const f=document.getElementById('proc-fill');
+  document.getElementById('proc-sub').textContent=msg||'Processing';
+  f.style.animation='none'; f.getBoundingClientRect(); f.style.animation='';
+  ov.classList.add('on');
+  setTimeout(()=>{ ov.classList.remove('on'); if(cb) cb(); },2400);
+}
+
+// ════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast'+(type?' '+type:'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  show('login');
+  setTimeout(buildStaticCharts,100);
+
+  // Login button
+  const loginBtn=document.getElementById('login-btn');
+  if(loginBtn) loginBtn.onclick=doLogin;
+
+  // Signup button
+  const signupBtn=document.getElementById('signup-btn');
+  if(signupBtn) signupBtn.onclick=doSignup;
+
+  // Enter key on password
+  const passField=document.getElementById('l-pass');
+  if(passField) passField.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+
+  // Back button
+  const backBtn=document.getElementById('t-back');
+  if(backBtn) backBtn.onclick=goToUpload;
+
+  // Drag & drop
+  const dz=document.getElementById('dz');
+  if(dz){
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+    dz.addEventListener('drop',e=>{
+      e.preventDefault(); dz.classList.remove('drag');
+      const f=e.dataTransfer.files[0];
+      if(f){
+        document.getElementById('up-filename').textContent=f.name;
+        document.getElementById('analyse-btn').disabled=false;
+      }
+    });
+  }
+
+  // Check if already logged in (page refresh)
+  fetch('/me').then(r=>r.ok?r.json():null).then(user=>{
+    if(user){
+      setUserUI(user.email, user.role);
+      show('upload');
+      startSessionTimer();
+      loadHistory();
+    }
+  }).catch(()=>{});
+});
+</script>
+</body>
+</html>
