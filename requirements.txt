@@ -1,8 +1,5 @@
-flask
-gunicorn
-supabase
-python-dotenv
+streamlit
 pandas
-numpy
 scikit-learn
 joblib
+numpy
